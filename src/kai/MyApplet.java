@@ -31,4 +31,5 @@ public class MyApplet extends PApplet {
         rgb[2] = 0;
         return rgb;
     }
+    //new Mac !!
 }

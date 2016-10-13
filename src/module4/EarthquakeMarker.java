@@ -2,7 +2,9 @@ package module4;
 
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
+import javafx.scene.paint.Color;
 import processing.core.PGraphics;
+import processing.core.PImage;
 
 /** Implements a visual marker for earthquakes on an earthquake map
  * 
@@ -37,7 +39,9 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	public static final float THRESHOLD_DEEP = 300;
 
 	// ADD constants for colors
-
+	public static final Color yellow = Color.rgb(255,255,0);
+	public static final Color red = Color.rgb(255,0,0);
+	public static final Color blue = Color.rgb(0,0,255);
 	
 	// abstract method implemented in derived classes
 	public abstract void drawEarthquake(PGraphics pg, float x, float y);
@@ -71,7 +75,6 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 		
 		// reset to previous styling
 		pg.popStyle();
-		
 	}
 	
 	// determine color of marker from depth
@@ -80,6 +83,13 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	// You might find the getters below helpful.
 	private void colorDetermine(PGraphics pg) {
 		//TODO: Implement this method
+		if(getDepth() >= THRESHOLD_DEEP) {
+			pg.fill(255,255,0);
+		}else if(getDepth() >= THRESHOLD_INTERMEDIATE ){
+			pg.fill(255,0,0);
+		}else{
+			pg.fill(0,0,255);
+		}
 	}
 	
 	

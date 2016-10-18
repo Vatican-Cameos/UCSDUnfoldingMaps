@@ -1,6 +1,7 @@
 package module5;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -13,6 +14,7 @@ import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.MultiMarker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
+import de.fhpotsdam.unfolding.providers.Microsoft;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import parsing.ParseFeed;
 import processing.core.PApplet;
@@ -70,7 +72,7 @@ public class EarthquakeCityMap extends PApplet {
 		    earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
 		}
 		else {
-			map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
+			map = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.HybridProvider());
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
 		    //earthquakesURL = "2.5_week.atom";
 		}
@@ -146,6 +148,21 @@ public class EarthquakeCityMap extends PApplet {
 	private void selectMarkerIfHover(List<Marker> markers)
 	{
 		// TODO: Implement this method
+		for (Marker m : markers) {
+			if(m.isInside(map,mouseX,mouseY)) {
+			    CommonMarker checkIt = lastSelected;
+                if(lastSelected == null) {
+                    lastSelected = (CommonMarker) m;
+                    lastSelected.setSelected(true);
+                    break;
+                }else if(!lastSelected.isSelected()){
+                    lastSelected = (CommonMarker) m;
+                    lastSelected.setSelected(true);
+                    break;
+                }
+            }
+
+		}
 	}
 	
 	/** The event handler for mouse clicks
@@ -157,11 +174,66 @@ public class EarthquakeCityMap extends PApplet {
 	public void mouseClicked()
 	{
 		// TODO: Implement this method
+        if(lastClicked != null){
+            lastClicked.setClicked(false);
+            lastClicked = null;
+            unhideMarkers();
+        }else{
+
+			ArrayList<Marker> markers = new ArrayList<>();
+			markers.addAll(quakeMarkers);
+			markers.addAll(cityMarkers);
+			hideAll();
+			hideAndShowThreats(markers);
+
+        }
 		// Hint: You probably want a helper method or two to keep this code
 		// from getting too long/disorganized
 	}
-	
-	
+
+	private void hideAll() {
+		for(Marker marker : quakeMarkers) {
+			marker.setHidden(true);
+		}
+
+		for(Marker marker : cityMarkers) {
+			marker.setHidden(true);
+		}
+	}
+
+	private void hideAndShowThreats(List<Marker> markers) {
+		for(Marker marker : markers){
+			if(marker.isInside(map,mouseX,mouseY)){
+				marker.setHidden(false);
+				lastClicked = (CommonMarker) marker;
+				lastClicked.setClicked(true);
+				if( marker instanceof EarthquakeMarker) {
+					for (Marker markerCompare : cityMarkers) {
+						double threatRadius = ((EarthquakeMarker) marker).threatCircle();
+						//System.out.println("Threat " +threatRadius);
+						//System.out.println("distance " + marker.getDistanceTo(markerCompare.getLocation()));
+						if ((marker.getDistanceTo(markerCompare.getLocation())) <= threatRadius) {
+							markerCompare.setHidden(false);
+							System.out.println("Inside?");
+						}else{
+							markerCompare.setHidden(true);
+						}
+					}
+				}else if (marker instanceof CityMarker){
+					for(Marker markerCompare : quakeMarkers){
+						double threatRadius = ((EarthquakeMarker) markerCompare).threatCircle();
+						if((marker.getDistanceTo(markerCompare.getLocation()) <= threatRadius)){
+							markerCompare.setHidden(false);
+						}else{
+							markerCompare.setHidden(true);
+						}
+					}
+				}
+			}
+		}
+	}
+
+
 	// loop over and unhide all markers
 	private void unhideMarkers() {
 		for(Marker marker : quakeMarkers) {

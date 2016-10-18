@@ -57,9 +57,9 @@ public class CityMarker extends CommonMarker {
             String country = getCountry();
             float population = getPopulation();
             pg.fill(255, 255, 255);
-            pg.rect(x, y + 10, 150, 40);
+            pg.rect(x, y + 10, 150, 60);
             pg.fill(0, 0, 0);
-            pg.text("City : " + city + "\n Country : " + country + "\n Population" + population, x + 5, y + 20);
+            pg.text("City : " + city + "\nCountry : " + country + "\nPopulation" + population, x + 5, y + 30);
 
 	}
 	

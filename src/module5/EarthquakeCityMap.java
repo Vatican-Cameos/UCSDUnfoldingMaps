@@ -183,7 +183,6 @@ public class EarthquakeCityMap extends PApplet {
 			ArrayList<Marker> markers = new ArrayList<>();
 			markers.addAll(quakeMarkers);
 			markers.addAll(cityMarkers);
-			hideAll();
 			hideAndShowThreats(markers);
 
         }
@@ -204,6 +203,7 @@ public class EarthquakeCityMap extends PApplet {
 	private void hideAndShowThreats(List<Marker> markers) {
 		for(Marker marker : markers){
 			if(marker.isInside(map,mouseX,mouseY)){
+				hideAll();
 				marker.setHidden(false);
 				lastClicked = (CommonMarker) marker;
 				lastClicked.setClicked(true);

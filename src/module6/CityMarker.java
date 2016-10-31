@@ -3,8 +3,10 @@ package module6;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.geo.Location;
+import module4.*;
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 
 /** Implements a visual marker for cities on an earthquake map
  * 
@@ -41,11 +43,13 @@ public class CityMarker extends CommonMarker {
 		//System.out.println("Drawing a city");
 		// Save previous drawing style
 		pg.pushStyle();
-		
+
 		// IMPLEMENT: drawing triangle for each city
-		pg.fill(150, 30, 30);
-		pg.triangle(x, y-TRI_SIZE, x-TRI_SIZE, y+TRI_SIZE, x+TRI_SIZE, y+TRI_SIZE);
-		
+		module6.EarthquakeCityMap map = new EarthquakeCityMap();
+		PImage img = map.loadImagePApplet("city.png");
+		pg.image(img,x-10,y-10,25,25);
+		//pg.fill(150, 30, 30);
+		//pg.triangle(x, y-TRI_SIZE, x-TRI_SIZE, y+TRI_SIZE, x+TRI_SIZE, y+TRI_SIZE);
 		// Restore previous drawing style
 		pg.popStyle();
 	}
@@ -66,8 +70,7 @@ public class CityMarker extends CommonMarker {
 		pg.textAlign(PConstants.LEFT, PConstants.TOP);
 		pg.text(name, x+3, y-TRI_SIZE-33);
 		pg.text(pop, x+3, y - TRI_SIZE -18);
-		
-		pg.popStyle();
+
 	}
 	
 	private String getCity()

@@ -2,6 +2,7 @@ package module6;
 
 import de.fhpotsdam.unfolding.data.PointFeature;
 import processing.core.PGraphics;
+import processing.core.PImage;
 
 /** Implements a visual marker for land earthquakes on an earthquake map
  * 
@@ -29,7 +30,9 @@ public class LandQuakeMarker extends EarthquakeMarker {
 		// Simply draw a centered square.
 		// HINT: Notice the radius variable in the EarthquakeMarker class
 		// and how it is set in the EarthquakeMarker constructor
-		pg.ellipse(x, y, 2*radius, 2*radius);
+		EarthquakeCityMap map = new EarthquakeCityMap();
+		PImage image = map.loadImagePApplet("land.png");
+		pg.image(image,x-10, y-10, 25,25);
 		
 	}
 	

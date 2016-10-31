@@ -13,9 +13,11 @@ import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.MultiMarker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
+import de.fhpotsdam.unfolding.providers.Microsoft;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import parsing.ParseFeed;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
@@ -63,6 +65,26 @@ public class EarthquakeCityMap extends PApplet {
 	// NEW IN MODULE 5
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
+	private PImage city,land,ocean;
+
+	public PImage loadImagePApplet(String string){
+		switch (string){
+			case "city.png":
+				if(city == null)
+					city = loadImage(string);
+				return city;
+			case "land.png":
+				if(land == null)
+					land = loadImage(string);
+				return land;
+			case "ocean.png":
+				if(ocean == null)
+					ocean = loadImage(string);
+				return ocean;
+		}
+		return null;
+	}
+
 	
 	public void setup() {		
 		// (1) Initializing canvas and map tiles
@@ -72,20 +94,19 @@ public class EarthquakeCityMap extends PApplet {
 		    earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
 		}
 		else {
-			map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
+			map = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.HybridProvider());
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
 		    //earthquakesURL = "2.5_week.atom";
 		}
 		MapUtils.createDefaultEventDispatcher(this, map);
-		
+
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
 		//earthquakesURL = "test1.atom";
 		//earthquakesURL = "test2.atom";
 		
 		// Uncomment this line to take the quiz
-		earthquakesURL = "quiz2.atom";
-		
+		//earthquakesURL = "quiz2.atom";
 		
 		// (2) Reading in earthquake data and geometric properties
 	    //     STEP 1: load country features and markers
@@ -286,9 +307,10 @@ public class EarthquakeCityMap extends PApplet {
 		fill(150, 30, 30);
 		int tri_xbase = xbase + 35;
 		int tri_ybase = ybase + 50;
-		triangle(tri_xbase, tri_ybase-CityMarker.TRI_SIZE, tri_xbase-CityMarker.TRI_SIZE, 
-				tri_ybase+CityMarker.TRI_SIZE, tri_xbase+CityMarker.TRI_SIZE, 
-				tri_ybase+CityMarker.TRI_SIZE);
+		image(loadImagePApplet("city.png"),tri_xbase-10,tri_ybase-5,15,15);
+		//triangle(tri_xbase, tri_ybase-CityMarker.TRI_SIZE, tri_xbase-CityMarker.TRI_SIZE,
+		//		tri_ybase+CityMarker.TRI_SIZE, tri_xbase+CityMarker.TRI_SIZE,
+		//		tri_ybase+CityMarker.TRI_SIZE);
 
 		fill(0, 0, 0);
 		textAlign(LEFT, CENTER);
@@ -299,11 +321,13 @@ public class EarthquakeCityMap extends PApplet {
 		text("Size ~ Magnitude", xbase+25, ybase+110);
 		
 		fill(255, 255, 255);
-		ellipse(xbase+35, 
-				ybase+70, 
-				10, 
-				10);
-		rect(xbase+35-5, ybase+90-5, 10, 10);
+		image(loadImagePApplet("land.png"),xbase+25,ybase+70-5,15,15);
+		//ellipse(xbase+35,
+		//		ybase+70,
+		//		10,
+		//		10);
+		image(loadImagePApplet("ocean.png"),xbase+25,ybase+90-5,15,15);
+		//rect(xbase+35-5, ybase+90-5, 10, 10);
 		
 		fill(color(255, 255, 0));
 		ellipse(xbase+35, ybase+140, 12, 12);

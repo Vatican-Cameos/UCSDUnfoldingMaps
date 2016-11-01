@@ -41,8 +41,11 @@ public class EarthquakeCityMap extends PApplet {
 	
 	/** This is where to find the local tiles, for working without an Internet connection */
 	public static String mbTilesString = "blankLight-1-3.mbtiles";
-	
-	
+
+	//my extension
+	private boolean drawAffectedCities = false;
+	boolean once = true;
+	ArrayList<Marker> listOfCities = new ArrayList<>();
 
 	//feed with magnitude 2.5+ Earthquakes
 	private String earthquakesURL = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.atom";
@@ -152,6 +155,10 @@ public class EarthquakeCityMap extends PApplet {
 		background(0);
 		map.draw();
 		addKey();
+		if(drawAffectedCities){
+			displayInfoCanvas(listOfCities);
+		}
+
 		
 	}
 	
@@ -212,6 +219,8 @@ public class EarthquakeCityMap extends PApplet {
 	public void mouseClicked()
 	{
 		if (lastClicked != null) {
+			drawAffectedCities = false;
+			once = true;
 			unhideMarkers();
 			lastClicked = null;
 		}
@@ -228,6 +237,7 @@ public class EarthquakeCityMap extends PApplet {
 	// and respond appropriately
 	private void checkCitiesForClick()
 	{
+
 		if (lastClicked != null) return;
 		// Loop over the earthquake markers to see if one of them is selected
 		for (Marker marker : cityMarkers) {
@@ -242,15 +252,41 @@ public class EarthquakeCityMap extends PApplet {
 				for (Marker mhide : quakeMarkers) {
 					EarthquakeMarker quakeMarker = (EarthquakeMarker)mhide;
 					if (quakeMarker.getDistanceTo(marker.getLocation()) 
-							> quakeMarker.threatCircle()) {
+							< quakeMarker.threatCircle()) {
+						quakeMarker.setHidden(false);
+						listOfCities.add(quakeMarker);
+					}else{
 						quakeMarker.setHidden(true);
 					}
+					drawAffectedCities = true;
 				}
 				return;
 			}
 		}		
 	}
-	
+
+	private void displayInfoCanvas(ArrayList<Marker> listOfCities) {
+		fill(255, 250, 240);
+
+		int xbase = 25;
+		int ybase = 300;
+
+		rect(xbase, ybase , 150, 100);
+
+		fill(0,0,0);
+		text("Threats",xbase + 50,ybase + 25);
+		textSize(10);
+		textAlign(LINES);
+		int increment = ybase+50;
+			for (Marker mar : listOfCities) {
+				//text("Threats asdasdas",xbase + 50,ybase + 25);
+				text(mar.getStringProperty("title"), xbase, increment);
+				System.out.println(mar.getStringProperty("title"));
+				increment += 10;
+			}
+
+	}
+
 	// Helper method that will check if an earthquake marker was clicked on
 	// and respond appropriately
 	private void checkEarthquakesForClick()
